@@ -182,6 +182,97 @@ $('pause').onclick=()=>{if(!L.r)return;L.r=0;cancelAnimationFrame(L.raf);$('stag
 $('reset').onclick=()=>{cancelAnimationFrame(L.raf);Object.assign(L,{r:0,o:0,k:0,p:0,done:1});$('stage').className='stage';st('PRONTO','PRONTO PARA ABRIR');$('go').disabled=false;$('go').textContent='▶ Começar a abrir';$('pause').disabled=true;$('th').disabled=false;lr()};
 const R={r:0,N:0,d:0,w:0,q:0,per:0,raf:0};
 function proj(){const N=+$('N').value,c=+$('Cc').value,s=+$('pp').value,p=P($('pm').value==='1'),q=C(p,c);
+$('eW').textContent=F(N*q);$('qp').textContent=pc(q,2);$('tp').textContent=T(c*s);$('istema de pity</div>
+<button class="btn go" id="go">▶ Começar a abrir</button>
+<div class="two"><button class="btn sec" id="pause" disabled>Ⅱ Pausar</button><button class="btn sec pk" id="reset">↺ Reiniciar</button></div>
+</section>
+
+<section class="panel" id="pop">
+<div class="row"><div><h2 class="hd">Simulador de população</h2><div class="mut">Até 5.000.000 de jogadores independentes</div></div><span class="tag" id="pst">PRONTO</span></div>
+<p class="mut">Todos os jogadores abrem o número de baús escolhido. Conta quantos conseguem pelo menos um token (quem ganha mais de uma vez conta só uma).</p>
+<label class="f lb" for="N">Número de jogadores</label>
+<select id="N"><option value="1000">1.000 jogadores</option><option value="10000">10.000 jogadores</option><option value="100000">100.000 jogadores</option><option value="1000000">1.000.000 de jogadores</option><option value="5000000" selected>5.000.000 de jogadores</option></select>
+<label class="f lb" for="Cc">Baús por jogador</label>
+<select id="Cc"><option>100</option><option>500</option><option>1000</option><option>2500</option><option>5000</option><option>10000</option><option>25000</option><option>50000</option><option selected>100000</option><option>250000</option><option>500000</option></select>
+<label class="f lb" for="pp">Tempo entre baús</label>
+<select id="pp"><option value="1">A cada 1 segundo</option><option value="5" selected>A cada 5 segundos</option><option value="10">A cada 10 segundos</option></select>
+<label class="f lb" for="pm">Modo bônus</label>
+<select id="pm"><option value="0">Chance normal · 1 em 137.500</option><option value="1">⚡ Hora do Tesouro · 2× de chance</option></select>
+<label class="f lb" for="pv">Velocidade de apresentação</label>
+<select id="pv"><option value="0">Instantânea · velocidade máxima</option><option value="1" selected>Suave · contagem visível</option><option value="2">Gravação · contagem mais lenta</option></select>
+<div class="tbl" style="margin-top:18px"><div class="lb" style="border:0">Projeção teórica</div>
+<div><span>Vencedores únicos esperados</span><b id="eW"></b></div><div><span>Chance por jogador</span><b id="qp"></b></div><div><span>Tempo por jogador</span><b id="tp"></b></div><div><span>Total de baús de todos os jogadores</span><b id="tot"></b></div></div>
+<div class="two" style="margin-top:16px">
+<div class="mini"><div class="lb">Jogadores simulados</div><div class="n" id="pd" style="font-size:1rem">0 / 0</div></div>
+<div class="mini"><div class="lb">Com token</div><div class="n" id="pw">—</div></div>
+<div class="mini"><div class="lb">Sem token</div><div class="n" id="pn" style="color:var(--pk)">—</div></div>
+<div class="mini"><div class="lb">Taxa simulada</div><div class="n" id="pr" style="color:var(--cy)">—</div></div></div>
+<div class="mini" style="margin-top:12px"><div class="lb">Vencedores esperados</div><div class="n" id="pe">—</div></div>
+<div class="cmp"><div class="lb">Quantos jogadores vencem? Simulado × teórico</div>
+<div class="r"><div class="row"><span>Simulado</span><b id="bs">—</b></div><div class="t"><i id="bsb" style="background:var(--gold)"></i></div></div>
+<div class="r"><div class="row"><span>Teórico</span><b id="bt">—</b></div><div class="t"><i id="btb" style="background:var(--cy)"></i></div></div></div>
+<button class="btn go" id="prun">▶ Rodar população</button>
+<div class="two"><button class="btn sec" id="ppause" disabled>Ⅱ Pausar</button><button class="btn sec pk" id="pstop">■ Parar</button></div>
+<p class="mut" style="font-size:.9rem">Cada jogador recebe um resultado aleatório independente. A Hora do Tesouro assume chance dobrada durante toda a execução hipotética.</p>
+</section>
+
+<section class="panel">
+<h2 class="hd">Quanto tempo levaria?</h2><div class="mut">Tempo médio até o primeiro token · abrindo baús sem parar · modo da abertura ao vivo</div>
+<div class="grid" style="margin:16px 0 0" id="times"></div>
+<p class="mut">Com 5 milhões de jogadores abrindo ao mesmo tempo, o tempo de cada um não é multiplicado por 5 milhões.</p>
+</section>
+
+<section class="panel">
+<h2 class="hd">Sua chance não melhora.</h2>
+<div class="warn"><b>⚠ O PRÓXIMO BAÚ NUNCA TEM CHANCE MAIOR.</b><br>Abrir 100.000 baús sem ganhar não aumenta a chance do baú seguinte. A Hora do Tesouro dobra a mesma chance fixa por baú, sem progressão. O que cresce é a chance acumulada de ter ganhado pelo menos uma vez ao longo de todas as tentativas. Não há sistema de pity.</div>
+<div class="grid" id="cum"></div>
+<h3 class="hd" style="font-size:1.4rem;margin:18px 0 8px">🌐 E com 5.000.000 de jogadores?</h3>
+<div class="mut">Todos abrindo sem parar no ritmo e modo escolhidos no simulador de população, com sorteios independentes.</div>
+<div class="grid" style="margin-top:12px"><div class="st"><div class="n" id="w1" style="color:var(--gold)"></div><div class="mut">Vencedores esperados em 1 hora</div></div><div class="st"><div class="n" id="w24" style="color:var(--gold)"></div><div class="mut">Vencedores esperados em 24 horas</div></div></div>
+<p class="mut">Mais jogadores significam mais vencedores no total, <b>não</b> uma chance maior para cada indivíduo.</p>
+</section>
+
+<section class="panel">
+<div class="row"><h2 class="hd">Histórico de execuções</h2><span class="tag">SALVO NO NAVEGADOR</span></div>
+<ul id="hist"></ul>
+<button class="btn sec pk" id="clr" style="font-size:1.1rem;padding:12px">Limpar histórico</button>
+</section>
+
+<footer class="mut"><b>Simulador não oficial feito por fãs, não é a jogabilidade real de Fortnite.</b> Usa as chances informadas e sorteios independentes, sem sistema de pity. A Hora do Tesouro assume chance 2× durante toda a execução hipotética. Disponibilidade real de baús, movimentação, inventário no servidor e matchmaking não são modelados. Cinco milhões de jogadores é um cenário escolhido, não a quantidade real de jogadores. Sem afiliação com a Epic Games. Versão em português da ferramenta original de fnbrleak.</footer>
+</main>
+<script>
+const $=i=>document.getElementById(i),B=137500,F=n=>Math.round(n).toLocaleString('pt-BR'),D=(n,d=1)=>n.toFixed(d).replace('.',','),
+P=t=>(t?2:1)/B,C=(p,n)=>1-Math.exp(n*Math.log1p(-p)),pc=(x,d=1)=>D(x*100,d)+'%',
+T=s=>s<60?F(s)+' s':s<3600?D(s/60)+' min':s<86400?D(s/3600)+' h':D(s/86400,2)+' dias';
+let H=[];try{H=JSON.parse(localStorage.getItem('ph')||'[]')}catch(e){}
+function sv(){try{localStorage.setItem('ph',JSON.stringify(H.slice(0,30)))}catch(e){}}
+function rh(){const u=$('hist');u.textContent='';if(!H.length){const l=document.createElement('li');l.className='mut';l.textContent='Ainda sem resultados. Rode uma simulação e ela aparecerá aqui.';u.append(l);return}
+H.slice(0,10).forEach(x=>{const l=document.createElement('li');l.textContent=x;u.append(l)})}
+function add(t){H.unshift(t);sv();rh()}
+$('clr').onclick=()=>{H=[];sv();rh()};
+$('theme').onclick=()=>{const r=document.documentElement,l=r.dataset.theme==='light';r.dataset.theme=l?'dark':'light';$('theme').textContent=l?'☀ MODO CLARO':'☾ MODO ESCURO'};
+const MODE=th=>th?'Hora do Tesouro':'chance normal';
+function stats(){const th=$('th').checked,p=P(th),m=1/p;
+$('odds').textContent='1 / '+F(m);$('mean').textContent=F(m);$('med').textContent=F(Math.log(.5)/Math.log1p(-p));
+$('single').textContent=D(p*100,6)+'%';$('lp').textContent=D(p*100,6)+'%';$('five').textContent='≈'+F(5e6*p);
+$('cur').innerHTML='Chance atual: <b>1 em '+F(m)+'</b> · Sem sistema de pity';
+$('times').innerHTML=[1,5,10].map(s=>{const t=m*s;return '<div class="st"><div class="lb">A cada '+s+' s</div><div class="n">'+D(t/3600)+' horas</div><div>'+D(t/86400,2)+' dias</div><div class="mut">'+F(t)+' segundos</div></div>'}).join('');
+$('cum').innerHTML=[[C(p,1e4),'Ganho até 10 mil baús'],[.5,'Ganho até a mediana'],[C(p,m),'Ganho até a média'],[C(p,5e5),'Ganho até 500 mil baús']].map(a=>'<div class="st"><div class="n" style="color:var(--cy)">'+pc(a[0])+'</div><div class="mut">'+a[1]+'</div></div>').join('')}
+$('spd').onchange=$('pace').onchange=()=>{$('spdl').textContent=F(+$('spd').value)+' baús/s de reprodução visual';lr()};
+$('th').onchange=stats;
+const L={r:0,o:0,k:0,p:0,raf:0,last:0,done:1};
+function st(s,m){$('stat').textContent=s;$('msg').textContent=m}
+function lr(){const n=Math.floor(L.o),c=L.p?C(L.p,n):0;$('cnt').textContent=F(n);$('simt').textContent=T(n*+$('pace').value)+' de jogo simulado';$('lc').textContent=pc(c,3);$('bar').style.width=c*100+'%'}
+function tick(t){if(!L.r)return;L.o=Math.min(L.k,L.o+ +$('spd').value*(t-L.last)/1000);L.last=t;lr();if(L.o>=L.k){fin();return}L.raf=requestAnimationFrame(tick)}
+function fin(){L.r=0;L.done=1;const sg=$('stage').classList;sg.remove('run');sg.add('win');st('TOKEN OBTIDO','ACESSO À LOJA PIRATA!');
+$('go').disabled=false;$('go').textContent='▶ Nova abertura';$('pause').disabled=true;$('th').disabled=false;
+add('Ao vivo · '+F(L.k)+' baús · '+T(L.k*+$('pace').value)+' de jogo · '+MODE(L.p>1/B))}
+$('go').onclick=()=>{if(L.r)return;if(L.done){L.p=P($('th').checked);L.k=Math.max(1,Math.ceil(Math.log(1-Math.random())/Math.log1p(-L.p)));L.o=0;L.done=0;$('stage').classList.remove('win')}
+L.r=1;L.last=performance.now();$('stage').classList.add('run');st('ABRINDO','ABRINDO BAÚS…');$('go').disabled=true;$('pause').disabled=false;$('th').disabled=true;L.raf=requestAnimationFrame(tick)};
+$('pause').onclick=()=>{if(!L.r)return;L.r=0;cancelAnimationFrame(L.raf);$('stage').classList.remove('run');st('PAUSADO','PAUSADO');$('go').disabled=false;$('go').textContent='▶ Retomar';$('pause').disabled=true};
+$('reset').onclick=()=>{cancelAnimationFrame(L.raf);Object.assign(L,{r:0,o:0,k:0,p:0,done:1});$('stage').className='stage';st('PRONTO','PRONTO PARA ABRIR');$('go').disabled=false;$('go').textContent='▶ Começar a abrir';$('pause').disabled=true;$('th').disabled=false;lr()};
+const R={r:0,N:0,d:0,w:0,q:0,per:0,raf:0};
+function proj(){const N=+$('N').value,c=+$('Cc').value,s=+$('pp').value,p=P($('pm').value==='1'),q=C(p,c);
 $('eW').textContent=F(N*q);$('qp').textContent=pc(q,2);$('tp').textContent=T(c*s);$('btn go" id="go">▶ Começar a abrir</button>
 <div class="two"><button class="btn sec" id="pause" disabled>Ⅱ Pausar</button><button class="btn sec pk" id="reset">↺ Reiniciar</button></div>
 </section>
