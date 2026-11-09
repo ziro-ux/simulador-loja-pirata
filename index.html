@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulador da Loja Pirata</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+<style>
+:root{--bg:#1b1850;--bg2:#0f0d33;--card:#22235a;--card2:#2c2f6b;--bd:#3d4390;--tx:#f3f0ff;--mut:#a9a6d8;--gold:#ffd23f;--cy:#4dd0ff;--pk:#ff7eb3;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#efeaff;--bg2:#ddd4ff;--card:#fff;--card2:#f1ecff;--bd:#c9bff5;--tx:#1d1550;--mut:#5d5897;--gold:#b87800;--cy:#0a7fb0;--pk:#c2307a;color-scheme:light}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:linear-gradient(var(--bg),var(--bg2));color:var(--tx);font:400 16px/1.45 'Outfit',system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px}
+.hd,.n{font-family:'Anton','Impact','Arial Narrow',sans-serif;font-weight:400;letter-spacing:.01em}
+.mut{color:var(--mut);font-style:italic}
+.lb{font-size:.78rem;letter-spacing:.14em;font-weight:600;color:var(--mut);text-transform:uppercase}
+.hero{background:linear-gradient(145deg,#4c2aa8,#6a35c9 60%,#7b44c9);border-radius:28px;padding:22px;margin-bottom:16px;box-shadow:0 8px 0 #1c1457;color:#fff}
+.hero p{font-style:italic;font-size:1.05rem;margin:14px 0 20px;color:#eee8ff}
+h1{font-size:clamp(2.4rem,11vw,3.6rem);line-height:1.02;margin:14px 0 0;text-transform:uppercase}h1 span{color:#ffd23f}
+.pill{display:inline-block;border:2px solid #ffffff66;background:#ffffff22;color:#fff;border-radius:99px;padding:8px 16px;font:600 .85rem 'Outfit',sans-serif;letter-spacing:.1em;cursor:pointer}
+.gold{background:linear-gradient(135deg,#fbe08a,#efb02e);border:3px solid #fff3b8;border-radius:24px;padding:18px 20px;box-shadow:0 7px 0 #c97d17;color:#4a2a05}
+.gold .n{font-size:clamp(3rem,15vw,4.6rem);line-height:1.05;color:#2a1a6e}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.st{background:var(--card);border:2px solid var(--bd);border-radius:24px;padding:16px 18px;box-shadow:0 5px 0 #0003}
+.st .n{font-size:clamp(1.9rem,9vw,2.6rem);line-height:1.15;margin:6px 0}
+.panel{background:var(--card);border:2px solid var(--bd);border-radius:28px;padding:20px;margin-bottom:16px;box-shadow:0 8px 0 #0003}
+.panel h2{font-size:1.9rem;margin:0 0 2px;text-transform:uppercase}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tag{font:600 .75rem 'Outfit',sans-serif;letter-spacing:.12em;border:2px solid var(--bd);border-radius:99px;padding:4px 12px;color:var(--mut)}
+.stage{margin:16px 0;border:3px solid #4b72c0;border-radius:26px;background:radial-gradient(circle,#365aa6,#1f3270);text-align:center;padding:14px 10px 12px;color:#fff}
+.stage svg{width:210px;max-width:70%}#lid{transform-origin:35px 62px;transition:transform .5s}
+.stage.win #lid{transform:rotate(-38deg) translateY(-6px)}.stage.win{box-shadow:0 0 40px #ffd23f99;border-color:#ffd23f}
+.stage.run svg{animation:sh .22s infinite}@keyframes sh{50%{transform:translateY(-4px) rotate(1.5deg)}}
+@media(prefers-reduced-motion:reduce){.stage.run svg{animation:none}}
+#msg{font:400 1.25rem 'Anton','Impact',sans-serif;letter-spacing:.06em;margin-top:6px}
+.big{text-align:center}.big .n{font-size:4rem;line-height:1.1}
+.mini{background:var(--card2);border:2px solid var(--bd);border-radius:20px;padding:12px 14px}.mini .n{font-size:1.9rem;color:var(--gold)}
+.bar{height:16px;background:var(--card2);border-radius:99px;overflow:hidden;margin:14px 0 8px}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cy),var(--gold));transition:width .1s}
+label.f{display:block;margin:18px 0 6px}
+select{width:100%;background:var(--card2);color:var(--tx);border:2px solid var(--bd);border-radius:20px;padding:15px 16px;font:600 1.05rem 'Outfit',sans-serif;font-style:italic}
+.th{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#4a2f72;border:2px solid #7a5aa8;border-radius:22px;padding:16px;margin:16px 0 8px;color:#fff}
+.th b{font:400 1.7rem 'Anton','Impact',sans-serif;color:#ffd97a;letter-spacing:.03em}
+.sw{position:relative;width:74px;height:42px;flex:none}.sw input{opacity:0;position:absolute;inset:0;margin:0;width:100%;height:100%;cursor:pointer;z-index:2}
+.sw s{position:absolute;inset:0;background:#554b85;border:2px solid #8a7cc0;border-radius:99px;transition:.2s}
+.sw s:after{content:"";position:absolute;top:4px;left:5px;width:30px;height:30px;border-radius:50%;background:#e3e6f7;transition:.2s}
+.sw input:checked+s{background:#e0a21b}.sw input:checked+s:after{left:35px}.sw input:focus-visible+s{outline:3px solid var(--cy)}
+.btn{width:100%;border:0;border-radius:22px;padding:17px;font:400 1.5rem 'Anton','Impact',sans-serif;letter-spacing:.04em;cursor:pointer;text-transform:uppercase}
+.go{background:linear-gradient(#ffe36b,#ffc928);color:#3a2300;box-shadow:0 6px 0 #c98a0c;margin:12px 0 14px}.go:active{transform:translateY(3px);box-shadow:0 3px 0 #c98a0c}
+.sec{background:var(--card2);color:var(--mut);border:2px solid var(--bd);font-size:1.3rem;padding:14px}.sec.pk{color:var(--pk)}
+.btn:disabled{opacity:.45;cursor:not-allowed}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tbl div{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}.tbl b{text-align:right}
+.cmp{margin:16px 0 4px}.cmp .r{margin:10px 0}.cmp .t{height:22px;background:var(--card2);border-radius:99px;overflow:hidden}.cmp .t i{display:block;height:100%;width:0;transition:width .15s}
+.warn{border:2px solid var(--gold);border-radius:20px;padding:14px 16px;margin:14px 0;background:#ffd23f18}
+ul#hist{list-style:none;margin:12px 0;padding:0}#hist li{padding:10px 0;border-bottom:1px solid var(--bd);font-size:.95rem}
+a.skip,footer{font-size:.85rem}footer{margin-top:10px}
+button:focus-visible,select:focus-visible{outline:3px solid var(--cy);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<div class="row"><span class="lb" style="color:#ffe9a8">Caça ao tesouro · Laboratório de recompensas</span></div>
+<button class="pill" id="theme" style="margin-top:12px">☀ MODO CLARO</button>
+<h1 class="hd">Quão raro é <span>o tesouro?</span></h1>
+<p>Simule a busca pelo Acesso à Loja Pirata. Veja a abertura de baús ao vivo ou simule até cinco milhões de jogadores abrindo uma quantidade fixa de baús. Compare as chances normais com a Hora do Tesouro.</p>
+<div class="gold"><div class="lb" style="color:#6b4310">Acesso à Loja Pirata · por baú</div><div class="n" id="odds">1 / 137.500</div><div style="font-style:italic">Cada baú é um sorteio independente</div></div>
+</section>
+
+<div class="grid">
+<div class="st"><div class="lb">Baús esperados</div><div class="n" id="mean" style="color:var(--gold)"></div><div class="mut">Média até a primeira vitória · modo selecionado</div></div>
+<div class="st"><div class="lb">Baús na mediana</div><div class="n" id="med"></div><div class="mut">50% de chance até este ponto</div></div>
+<div class="st"><div class="lb">Chance por baú</div><div class="n" id="single" style="color:var(--cy)"></div><div class="mut">Nunca aumenta após baús sem sucesso</div></div>
+<div class="st"><div class="lb">5 mi de jogadores · 1º baú</div><div class="n" id="five"></div><div class="mut">Vencedores esperados em um único baú · modo selecionado</div></div>
+</div>
+
+<section class="panel" id="live">
+<div class="row"><div><h2 class="hd">Abertura de baús ao vivo</h2><div class="mut">Um jogador · animação baú a baú</div></div><span class="tag" id="stat">PRONTO</span></div>
+<div class="stage" id="stage">
+<svg id="chest" viewBox="0 0 200 150" aria-hidden="true"><ellipse cx="100" cy="132" rx="82" ry="10" fill="#0a1236" opacity=".8"/><g id="lid"><path d="M35 62 L55 22 H145 L165 62Z" fill="#e2a02e" stroke="#f5c84b" stroke-width="5" stroke-linejoin="round"/></g><path d="M35 62H165V108Q100 124 35 108Z" fill="#6b3d2a" stroke="#f5c84b" stroke-width="6" stroke-linejoin="round"/><rect x="52" y="62" width="16" height="50" fill="#fbe7a1"/><rect x="132" y="62" width="16" height="50" fill="#f5c84b"/><rect x="88" y="72" width="24" height="26" rx="4" fill="#f5c84b" stroke="#a8651a" stroke-width="3"/></svg>
+<div id="msg">PRONTO PARA ABRIR</div>
+</div>
+<div class="big"><div class="lb">Baús abertos</div><div class="n" id="cnt">0</div><div class="mut" id="simt">0 s de jogo simulado</div></div>
+<div class="two" style="margin-top:16px">
+<div class="mini"><div class="lb">Chance por baú</div><div class="n" id="lp"></div></div>
+<div class="mini"><div class="lb">Chance até agora*</div><div class="n" id="lc">0,000%</div></div>
+</div>
+<div class="bar"><i id="bar"></i></div>
+<div class="row mut" style="font-size:.9rem;align-items:flex-start"><span>*Teórica acumulada · a chance do próximo baú nunca aumenta</span><span id="spdl" style="text-align:right;flex:none"></span></div>
+<label class="f lb" for="pace">Ritmo de baús no jogo</label>
+<select id="pace"><option value="1">Um a cada 1 segundo</option><option value="5" selected>Um a cada 5 segundos</option><option value="10">Um a cada 10 segundos</option></select>
+<label class="f lb" for="spd">Velocidade de reprodução / gravação</label>
+<select id="spd"><option value="1000">Cinematográfica · 1.000 baús/s</option><option value="10000">Rápida · 10.000 baús/s</option><option value="50000">Turbo · 50.000 baús/s</option><option value="250000" selected>Warp · 250.000 baús/s</option></select>
+<div class="th"><div><b>⚡ HORA DO TESOURO</b><div style="font-style:italic">2× de chance em todos os baús desta simulação</div></div><label class="sw"><input type="checkbox" id="th" aria-label="Hora do Tesouro"><s></s></label></div>
+<div class="mut" id="cur">Chance atual: <b>1 em 137.500</b> · Sem sistema de pity</div>
+<button class="btn go" id="go">▶ Começar a abrir</button>
+<div class="two"><button class="btn sec" id="pause" disabled>Ⅱ Pausar</button><button class="btn sec pk" id="reset">↺ Reiniciar</button></div>
+</section>
+
+<section class="panel" id="pop">
+<div class="row"><div><h2 class="hd">Simulador de população</h2><div class="mut">Até 5.000.000 de jogadores independentes</div></div><span class="tag" id="pst">PRONTO</span></div>
+<p class="mut">Todos os jogadores abrem o número de baús escolhido. Conta quantos conseguem pelo menos um token (quem ganha mais de uma vez conta só uma).</p>
+<label class="f lb" for="N">Número de jogadores</label>
+<select id="N"><option value="1000">1.000 jogadores</option><option value="10000">10.000 jogadores</option><option value="100000">100.000 jogadores</option><option value="1000000">1.000.000 de jogadores</option><option value="5000000" selected>5.000.000 de jogadores</option></select>
+<label class="f lb" for="Cc">Baús por jogador</label>
+<select id="Cc"><option>100</option><option>500</option><option>1000</option><option>2500</option><option>5000</option><option>10000</option><option>25000</option><option>50000</option><option selected>100000</option><option>250000</option><option>500000</option></select>
+<label class="f lb" for="pp">Tempo entre baús</label>
+<select id="pp"><option value="1">A cada 1 segundo</option><option value="5" selected>A cada 5 segundos</option><option value="10">A cada 10 segundos</option></select>
+<label class="f lb" for="pm">Modo bônus</label>
+<select id="pm"><option value="0">Chance normal · 1 em 137.500</option><option value="1">⚡ Hora do Tesouro · 2× de chance</option></select>
+<label class="f lb" for="pv">Velocidade de apresentação</label>
+<select id="pv"><option value="0">Instantânea · velocidade máxima</option><option value="1" selected>Suave · contagem visível</option><option value="2">Gravação · contagem mais lenta</option></select>
+<div class="tbl" style="margin-top:18px"><div class="lb" style="border:0">Projeção teórica</div>
+<div><span>Vencedores únicos esperados</span><b id="eW"></b></div><div><span>Chance por jogador</span><b id="qp"></b></div><div><span>Tempo por jogador</span><b id="tp"></b></div><div><span>Total de baús de todos os jogadores</span><b id="tot"></b></div></div>
+<div class="two" style="margin-top:16px">
+<div class="mini"><div class="lb">Jogadores simulados</div><div class="n" id="pd" style="font-size:1.4rem">0 / 0</div></div>
+<div class="mini"><div class="lb">Com token</div><div class="n" id="pw">—</div></div>
+<div class="mini"><div class="lb">Sem token</div><div class="n" id="pn" style="color:var(--pk)">—</div></div>
+<div class="mini"><div class="lb">Taxa simulada</div><div class="n" id="pr" style="color:var(--cy)">—</div></div></div>
+<div class="mini" style="margin-top:12px"><div class="lb">Vencedores esperados</div><div class="n" id="pe">—</div></div>
+<div class="cmp"><div class="lb">Quantos jogadores vencem? Simulado × teórico</div>
+<div class="r"><div class="row"><span>Simulado</span><b id="bs">—</b></div><div class="t"><i id="bsb" style="background:var(--gold)"></i></div></div>
+<div class="r"><div class="row"><span>Teórico</span><b id="bt">—</b></div><div class="t"><i id="btb" style="background:var(--cy)"></i></div></div></div>
+<button class="btn go" id="prun">▶ Rodar população</button>
+<div class="two"><button class="btn sec" id="ppause" disabled>Ⅱ Pausar</button><button class="btn sec pk" id="pstop">■ Parar</button></div>
+<p class="mut" style="font-size:.9rem">Cada jogador recebe um resultado aleatório independente. A Hora do Tesouro assume chance dobrada durante toda a execução hipotética.</p>
+</section>
+
+<section class="panel">
+<h2 class="hd">Quanto tempo levaria?</h2><div class="mut">Tempo médio até o primeiro token · abrindo baús sem parar · modo da abertura ao vivo</div>
+<div class="grid" style="margin:16px 0 0" id="times"></div>
+<p class="mut">Com 5 milhões de jogadores abrindo ao mesmo tempo, o tempo de cada um não é multiplicado por 5 milhões.</p>
+</section>
+
+<section class="panel">
+<h2 class="hd">Sua chance não melhora.</h2>
+<div class="warn"><b>⚠ O PRÓXIMO BAÚ NUNCA TEM CHANCE MAIOR.</b><br>Abrir 100.000 baús sem ganhar não aumenta a chance do baú seguinte. A Hora do Tesouro dobra a mesma chance fixa por baú, sem progressão. O que cresce é a chance acumulada de ter ganhado pelo menos uma vez ao longo de todas as tentativas. Não há sistema de pity.</div>
+<div class="grid" id="cum"></div>
+<h3 class="hd" style="font-size:1.4rem;margin:18px 0 8px">🌐 E com 5.000.000 de jogadores?</h3>
+<div class="mut">Todos abrindo sem parar no ritmo e modo escolhidos no simulador de população, com sorteios independentes.</div>
+<div class="grid" style="margin-top:12px"><div class="st"><div class="n" id="w1" style="color:var(--gold)"></div><div class="mut">Vencedores esperados em 1 hora</div></div><div class="st"><div class="n" id="w24" style="color:var(--gold)"></div><div class="mut">Vencedores esperados em 24 horas</div></div></div>
+<p class="mut">Mais jogadores significam mais vencedores no total, <b>não</b> uma chance maior para cada indivíduo.</p>
+</section>
+
+<section class="panel">
+<div class="row"><h2 class="hd">Histórico de execuções</h2><span class="tag">SALVO NO NAVEGADOR</span></div>
+<ul id="hist"></ul>
+<button class="btn sec pk" id="clr" style="font-size:1.1rem;padding:12px">Limpar histórico</button>
+</section>
+
+<footer class="mut"><b>Simulador não oficial feito por fãs, não é a jogabilidade real de Fortnite.</b> Usa as chances informadas e sorteios independentes, sem sistema de pity. A Hora do Tesouro assume chance 2× durante toda a execução hipotética. Disponibilidade real de baús, movimentação, inventário no servidor e matchmaking não são modelados. Cinco milhões de jogadores é um cenário escolhido, não a quantidade real de jogadores. Sem afiliação com a Epic Games. Versão em português da ferramenta original de fnbrleak.</footer>
+</main>
+<script>
+const $=i=>document.getElementById(i),B=137500,F=n=>Math.round(n).toLocaleString('pt-BR'),D=(n,d=1)=>n.toFixed(d).replace('.',','),
+P=t=>(t?2:1)/B,C=(p,n)=>1-Math.exp(n*Math.log1p(-p)),pc=(x,d=1)=>D(x*100,d)+'%',
+T=s=>s<60?F(s)+' s':s<3600?D(s/60)+' min':s<86400?D(s/3600)+' h':D(s/86400,2)+' dias';
+let H=[];try{H=JSON.parse(localStorage.getItem('ph')||'[]')}catch(e){}
+function sv(){try{localStorage.setItem('ph',JSON.stringify(H.slice(0,30)))}catch(e){}}
+function rh(){const u=$('hist');u.textContent='';if(!H.length){const l=document.createElement('li');l.className='mut';l.textContent='Ainda sem resultados. Rode uma simulação e ela aparecerá aqui.';u.append(l);return}
+H.slice(0,10).forEach(x=>{const l=document.createElement('li');l.textContent=x;u.append(l)})}
+function add(t){H.unshift(t);sv();rh()}
+$('clr').onclick=()=>{H=[];sv();rh()};
+$('theme').onclick=()=>{const r=document.documentElement,l=r.dataset.theme==='light';r.dataset.theme=l?'dark':'light';$('theme').textContent=l?'☀ MODO CLARO':'☾ MODO ESCURO'};
+const MODE=th=>th?'Hora do Tesouro':'chance normal';
+function stats(){const th=$('th').checked,p=P(th),m=1/p;
+$('odds').textContent='1 / '+F(m);$('mean').textContent=F(m);$('med').textContent=F(Math.log(.5)/Math.log1p(-p));
+$('single').textContent=D(p*100,6)+'%';$('lp').textContent=D(p*100,6)+'%';$('five').textContent='≈'+F(5e6*p);
+$('cur').innerHTML='Chance atual: <b>1 em '+F(m)+'</b> · Sem sistema de pity';
+$('times').innerHTML=[1,5,10].map(s=>{const t=m*s;return '<div class="st"><div class="lb">A cada '+s+' s</div><div class="n">'+D(t/3600)+' horas</div><div>'+D(t/86400,2)+' dias</div><div class="mut">'+F(t)+' segundos</div></div>'}).join('');
+$('cum').innerHTML=[[C(p,1e4),'Ganho até 10 mil baús'],[.5,'Ganho até a mediana'],[C(p,m),'Ganho até a média'],[C(p,5e5),'Ganho até 500 mil baús']].map(a=>'<div class="st"><div class="n" style="color:var(--cy)">'+pc(a[0])+'</div><div class="mut">'+a[1]+'</div></div>').join('')}
+$('spd').onchange=$('pace').onchange=()=>{$('spdl').textContent=F(+$('spd').value)+' baús/s de reprodução visual';lr()};
+$('th').onchange=stats;
+const L={r:0,o:0,k:0,p:0,raf:0,last:0,done:1};
+function st(s,m){$('stat').textContent=s;$('msg').textContent=m}
+function lr(){const n=Math.floor(L.o),c=L.p?C(L.p,n):0;$('cnt').textContent=F(n);$('simt').textContent=T(n*+$('pace').value)+' de jogo simulado';$('lc').textContent=pc(c,3);$('bar').style.width=c*100+'%'}
+function tick(t){if(!L.r)return;L.o=Math.min(L.k,L.o+ +$('spd').value*(t-L.last)/1000);L.last=t;lr();if(L.o>=L.k){fin();return}L.raf=requestAnimationFrame(tick)}
+function fin(){L.r=0;L.done=1;const sg=$('stage').classList;sg.remove('run');sg.add('win');st('TOKEN OBTIDO','ACESSO À LOJA PIRATA!');
+$('go').disabled=false;$('go').textContent='▶ Nova abertura';$('pause').disabled=true;$('th').disabled=false;
+add('Ao vivo · '+F(L.k)+' baús · '+T(L.k*+$('pace').value)+' de jogo · '+MODE(L.p>1/B))}
+$('go').onclick=()=>{if(L.r)return;if(L.done){L.p=P($('th').checked);L.k=Math.max(1,Math.ceil(Math.log(1-Math.random())/Math.log1p(-L.p)));L.o=0;L.done=0;$('stage').classList.remove('win')}
+L.r=1;L.last=performance.now();$('stage').classList.add('run');st('ABRINDO','ABRINDO BAÚS…');$('go').disabled=true;$('pause').disabled=false;$('th').disabled=true;L.raf=requestAnimationFrame(tick)};
+$('pause').onclick=()=>{if(!L.r)return;L.r=0;cancelAnimationFrame(L.raf);$('stage').classList.remove('run');st('PAUSADO','PAUSADO');$('go').disabled=false;$('go').textContent='▶ Retomar';$('pause').disabled=true};
+$('reset').onclick=()=>{cancelAnimationFrame(L.raf);Object.assign(L,{r:0,o:0,k:0,p:0,done:1});$('stage').className='stage';st('PRONTO','PRONTO PARA ABRIR');$('go').disabled=false;$('go').textContent='▶ Começar a abrir';$('pause').disabled=true;$('th').disabled=false;lr()};
+const R={r:0,N:0,d:0,w:0,q:0,per:0,raf:0};
+function proj(){const N=+$('N').value,c=+$('Cc').value,s=+$('pp').value,p=P($('pm').value==='1'),q=C(p,c);
+$('eW').textContent=F(N*q);$('qp').textContent=pc(q,2);$('tp').textContent=T(c*s);$('tot').textContent=F(N*c);
+$('w1').textContent=F(5e6*C(p,3600/s));$('w24').textContent=F(5e6*C(p,86400/s))}
+['N','Cc','pp','pm'].forEach(i=>$(i).onchange=()=>{proj();if(!R.r)pclear()});
+function pclear(){R.N=0;$('pd').textContent='0 / '+F(+$('N').value);['pw','pn','pr','pe','bs','bt'].forEach(i=>$(i).textContent='—');$('bsb').style.width=$('btb').style.width='0';$('pst').textContent='PRONTO'}
+function pr(){const rate=R.d?R.w/R.d:0,sc=Math.max(R.q,rate,1e-9)*1.15;
+$('pd').textContent=F(R.d)+' / '+F(R.N);$('pw').textContent=F(R.w);$('pn').textContent=F(R.d-R.w);$('pr').textContent=pc(rate,3);$('pe').textContent=F(R.d*R.q);
+$('bs').textContent=pc(rate,3);$('bt').textContent=pc(R.q,3);$('bsb').style.width=rate/sc*100+'%';$('btb').style.width=R.q/sc*100+'%'}
+function step(){if(!R.r)return;const m=Math.min(R.per,R.N-R.d),q=R.q;let w=0;for(let i=0;i<m;i++)if(Math.random()<q)w++;R.w+=w;R.d+=m;pr();
+if(R.d>=R.N){R.r=0;$('pst').textContent='CONCLUÍDO';$('prun').disabled=false;$('ppause').disabled=true;
+add('População · '+F(R.N)+' jogadores × '+F(+$('Cc').value)+' baús · '+F(R.w)+' com token ('+pc(R.w/R.N,3)+') · '+MODE($('pm').value==='1'));return}
+R.raf=requestAnimationFrame(step)}
+$('prun').onclick=()=>{if(R.r)return;if(!R.N||R.d>=R.N){const v=$('pv').value;R.N=+$('N').value;R.d=R.w=0;R.q=C(P($('pm').value==='1'),+$('Cc').value);R.per=Math.ceil(R.N/(v==='0'?1:v==='1'?90:240))}
+R.r=1;$('pst').textContent='RODANDO';$('prun').disabled=true;$('ppause').disabled=false;R.raf=requestAnimationFrame(step)};
+$('ppause').onclick=()=>{R.r=0;cancelAnimationFrame(R.raf);$('pst').textContent='PAUSADO';$('prun').disabled=false;$('ppause').disabled=true};
+$('pstop').onclick=()=>{R.r=0;cancelAnimationFrame(R.raf);pclear();$('prun').disabled=false;$('ppause').disabled=true};
+stats();proj();pclear();rh();$('spd').onchange();
+</script>
+</body>
+</html>
